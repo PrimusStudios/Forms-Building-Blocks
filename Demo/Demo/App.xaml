@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<app:BuildingBlocksApplication xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:app="clr-namespace:Forms.BuildingBlocks.App;assembly=Forms.BuildingBlocks"
+             x:Class="Demo.App">
+    <app:BuildingBlocksApplication.Resources>
+
+    </app:BuildingBlocksApplication.Resources>
+</app:BuildingBlocksApplication>
