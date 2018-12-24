@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:app="clr-namespace:Forms.BuildingBlocks.App;assembly=Forms.BuildingBlocks"
              x:Class="Demo.App">
-    <app:BuildingBlocksApplication.Resources>
-
-    </app:BuildingBlocksApplication.Resources>
+    <Application.Resources>
+        <Style x:Key="LargeText" TargetType="Label">
+            <Setter Property="FontSize" Value="18"/>
+        </Style> 
+    </Application.Resources>
 </app:BuildingBlocksApplication>

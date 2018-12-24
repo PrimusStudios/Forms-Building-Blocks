@@ -14,7 +14,7 @@ namespace Demo
         //Can add platform registrations here.
         public App() : base(null)
         {
-            InitializeComponent();
+           
         }
 
         protected override void OnStart()
@@ -44,7 +44,7 @@ namespace Demo
 
         protected override async void Initialized()
         {
-
+            InitializeComponent();
             await NavigationService.NavigateToAsync<MainPageViewModel>();
         }
     }
