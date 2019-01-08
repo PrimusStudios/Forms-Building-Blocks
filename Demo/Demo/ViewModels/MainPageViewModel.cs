@@ -7,5 +7,6 @@ namespace Demo.ViewModels
 {
     public class MainPageViewModel : BindingBase
     {
+        
     }
 }

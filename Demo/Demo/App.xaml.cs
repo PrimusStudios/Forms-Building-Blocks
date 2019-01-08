@@ -1,5 +1,7 @@
 ﻿using System;
 using Demo.ViewModels;
+using Demo.Views;
+using Demo.Views.MasterDetails;
 using Forms.BuildingBlocks.App;
 using Forms.BuildingBlocks.Interfaces.DI;
 using Forms.BuildingBlocks.Interfaces.Navigation;
@@ -14,7 +16,6 @@ namespace Demo
         //Can add platform registrations here.
         public App() : base(null)
         {
-           
         }
 
         protected override void OnStart()
@@ -40,12 +41,22 @@ namespace Demo
         protected override void RegisterViewsForNavigation(IPageFactory pageFactory)
         {
             pageFactory.RegisterPage<MainPageViewModel, MainPage>();
+            pageFactory.RegisterPage<SecondPageViewModel, SecondPage>();
+            pageFactory.RegisterPage<ThirdPageViewModel, ThirdPage>();
+            pageFactory.RegisterPage<SimpleMasterDetailPageViewModel, SimpleMasterDetailPage>();
+            pageFactory.RegisterPage<DetailMasterDetailPageViewModel, DetailMasterDetailPage>();
+            pageFactory.RegisterPage<ComplexMasterDetailPageViewModel, ComplexMasterDetailPage>();
+            pageFactory.RegisterPage<MainTabbedPageViewModel, MainTabbedPage>();
         }
 
         protected override async void Initialized()
         {
             InitializeComponent();
-            await NavigationService.NavigateToAsync<MainPageViewModel>();
+            await NavigationService.SetMainPageAsync(typeof(MainTabbedPageViewModel), typeof(MainPageViewModel), typeof(SecondPageViewModel), typeof(ThirdPageViewModel));
+            //await NavigationService.SetMainPageAsync(typeof(SimpleMasterDetailPageViewModel), typeof(MainPageViewModel));
+            //await NavigationService.SetMainPageAsync(typeof(ComplexMasterDetailPageViewModel), typeof(MainPageViewModel), typeof(SecondPageViewModel));
+            //await NavigationService.SetMainPageAsync(typeof(SimpleMasterDetailPageViewModel));
+            //await NavigationService.SetMainPageAsync(typeof(MainPageViewModel));
         }
     }
 }

@@ -5,7 +5,7 @@
              x:Class="Demo.App">
     <Application.Resources>
         <Style x:Key="LargeText" TargetType="Label">
-            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontSize" Value="24"/>
         </Style> 
     </Application.Resources>
 </app:BuildingBlocksApplication>

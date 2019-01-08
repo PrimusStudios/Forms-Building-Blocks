@@ -8,6 +8,7 @@ namespace Forms.BuildingBlocks.App
 {
     public abstract class BuildingBlocksApplication : Application
     {
+        public new static BuildingBlocksApplication Current => (BuildingBlocksApplication)Application.Current;
         protected IContainer Container;
         protected INavigationService NavigationService;
         protected BuildingBlocksApplication(IPlatformRegistrations platformRegistrations)

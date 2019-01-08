@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Forms.BuildingBlocks.Enums;
-using Forms.BuildingBlocks.Interfaces.DI;
+using Forms.BuildingBlocks.Exceptions;
 using Forms.BuildingBlocks.Interfaces.Navigation;
 using Forms.BuildingBlocks.Interfaces.Navigation.Initializers;
 using Xamarin.Forms;
@@ -70,6 +70,104 @@ namespace Forms.BuildingBlocks.Navigation
             await HandlePostNavigationInitializations(viewModel, parameters);
         }
 
+        public async Task SetMainPageAsync(Dictionary<string, object> parameters, params Type[] viewModels)
+        {
+            if (viewModels == null || viewModels.Length == 0)
+            {
+                throw new ArgumentException("You must pass at least one page view model to set the main page.");
+            }
+
+            var firstViewModel = viewModels.First();
+            var firstBindingContext = BuildingBlocks.Container.Resolve(firstViewModel);
+            var firstPage = pageFactory.CreatePage(firstViewModel, false);
+            firstPage.BindingContext = firstBindingContext;
+
+            switch (firstPage)
+            {
+                case MasterDetailPage masterDetailPage:
+                    await SetMasterDetailPage(parameters, masterDetailPage, viewModels);
+                    break;
+                case TabbedPage tabbedPage:
+                    await SetTabbedPage(parameters, tabbedPage, viewModels);
+                    break;
+                default:
+                    Application.Current.MainPage = new NavigationPage(firstPage);
+                    await HandlePostNavigationInitializations(firstBindingContext, parameters);
+                    break;
+            }
+
+        }
+
+        async Task SetTabbedPage(Dictionary<string, object> parameters, TabbedPage tabbedPage,
+            Type[] viewModels)
+        {
+            if (viewModels.Length < 2)
+            {
+                throw new Exception("Tabbed page needs at least one page.");
+            }
+
+            var initializers = new List<Task>{ HandlePostNavigationInitializations(tabbedPage.BindingContext, parameters) };
+            for (var i = 1; i < viewModels.Length; ++i)
+            {
+                var tabViewModel = viewModels[i];
+                var tabBindingContext = BuildingBlocks.Container.Resolve(tabViewModel);
+                var tabPage = pageFactory.CreatePage(tabViewModel, false);
+                tabPage.BindingContext = tabBindingContext;
+
+                initializers.Add(HandlePostNavigationInitializations(tabBindingContext, parameters));
+                tabbedPage.Children.Add(new NavigationPage(tabPage)
+                {
+                    Title = tabPage.Title
+                });
+            }
+
+
+            Application.Current.MainPage = tabbedPage;
+
+            await Task.WhenAll(initializers);
+        }
+
+        async Task SetMasterDetailPage(Dictionary<string, object> parameters, MasterDetailPage masterDetailPage, Type[] viewModels)
+        {
+            if (viewModels.Length > 3)
+            {
+                throw new Exception("Master detail page can only have 2 pages.");
+            }
+
+            var initializers = new List<Task> { HandlePostNavigationInitializations(masterDetailPage.BindingContext, parameters) };
+            if (viewModels.Length > 1)
+            {
+                var detailViewModel = viewModels[1];
+                var detailBindingContext = BuildingBlocks.Container.Resolve(detailViewModel);
+                var detailPage = pageFactory.CreatePage(detailViewModel, false);
+                detailPage.BindingContext = detailBindingContext;
+
+                initializers.Add(HandlePostNavigationInitializations(detailBindingContext, parameters));
+
+                masterDetailPage.Detail = new NavigationPage(detailPage);
+            }
+
+            if (viewModels.Length > 2)
+            {
+                var masterViewModel = viewModels[2];
+                var masterBindingContext = BuildingBlocks.Container.Resolve(masterViewModel);
+                var masterPage = pageFactory.CreatePage(masterViewModel, false);
+                masterPage.BindingContext = masterBindingContext;
+
+                initializers.Add(HandlePostNavigationInitializations(masterBindingContext, parameters));
+
+                masterDetailPage.Master = masterPage;
+            }
+            Application.Current.MainPage = masterDetailPage;
+
+            await Task.WhenAll(initializers);
+        }
+
+        public async Task SetMainPageAsync(params Type[] viewModels)
+        {
+            await SetMainPageAsync(new Dictionary<string, object>(), viewModels);
+        }
+
         public async Task NavigateToViewAsync(Type viewModel, bool animated = true, bool cachePage = false, bool useModal = false)
         {
             await NavigateToViewAsync(viewModel, new Dictionary<string, object>(), animated, cachePage, useModal);
@@ -96,9 +194,10 @@ namespace Forms.BuildingBlocks.Navigation
 
             if (pageNavigation.Navigation == null)
             {
-                Application.Current.MainPage = new NavigationPage(page);
+                throw new NullMainPageException();
             }
-            else if (useModal)
+
+            if (useModal)
             {
                 parameters.Add(nameof(NavigationDirection), NavigationDirection.ModalForward);
                 await pageNavigation.Navigation.PushModalAsync(page, animated);

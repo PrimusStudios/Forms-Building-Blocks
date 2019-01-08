@@ -32,6 +32,20 @@ namespace Forms.BuildingBlocks.Interfaces.Navigation
         Task NavigateToRootViewAsync(Dictionary<string, object> parameters, bool animated = true);
 
         /// <summary>
+        ///     Resets the main page of the app. If only passed a basic page view model, then it will just set the main page as a Page in a Navigation Page,
+        /// If passed a MasterDetailPageViewModel, the first view model after the MasterDetail will be the Master and the second will be the Detail,
+        /// If passed a Tabbed Page, each page will be added to the tabbed page, from left to right.
+        /// </summary>
+        Task SetMainPageAsync(Dictionary<string, object> parameters, params Type[] viewModels);
+
+        /// <summary>
+        ///     Resets the main page of the app. If only passed a basic page view model, then it will just set the main page as a Page in a Navigation Page,
+        /// If passed a MasterDetailPageViewModel, the first view model after the MasterDetail will be the Master and the second will be the Detail,
+        /// If passed a Tabbed Page, each page will be added to the tabbed page, from left to right.
+        /// </summary>
+        Task SetMainPageAsync(params Type[] viewModels);
+
+        /// <summary>
         ///     Navigates to page of Type View Model.
         /// </summary>
         Task NavigateToViewAsync(Type viewModel, bool animated = true,
