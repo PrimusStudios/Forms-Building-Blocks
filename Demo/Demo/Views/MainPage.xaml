@@ -4,11 +4,18 @@
              xmlns:local="clr-namespace:Demo"
              Title="Main Page"
              x:Class="Demo.MainPage">
-    <Grid>
+    <StackLayout HorizontalOptions="Center"
+                 VerticalOptions="CenterAndExpand">
         <Label Text="Welcome to the Primus Studios Building Blocks App!" 
                Style="{StaticResource LargeText}"
                HorizontalOptions="Center"
                VerticalOptions="CenterAndExpand" />
+        <Button BackgroundColor="Purple"
+                TextColor="White"
+                Text="Passing Color Demo"
+                Command="{Binding StartColorDemoCommand}"/>
+    </StackLayout>
         
-    </Grid>
+        
+        
 </ContentPage>

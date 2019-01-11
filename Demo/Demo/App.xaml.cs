@@ -43,6 +43,7 @@ namespace Demo
             pageFactory.RegisterPage<MainPageViewModel, MainPage>();
             pageFactory.RegisterPage<SecondPageViewModel, SecondPage>();
             pageFactory.RegisterPage<ThirdPageViewModel, ThirdPage>();
+            pageFactory.RegisterPage<ColorPickerPageViewModel, ColorPickerPage>();
             pageFactory.RegisterPage<SimpleMasterDetailPageViewModel, SimpleMasterDetailPage>();
             pageFactory.RegisterPage<DetailMasterDetailPageViewModel, DetailMasterDetailPage>();
             pageFactory.RegisterPage<ComplexMasterDetailPageViewModel, ComplexMasterDetailPage>();

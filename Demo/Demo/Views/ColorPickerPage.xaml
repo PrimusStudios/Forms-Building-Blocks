@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:Demo.Converters;assembly=Demo"
+             x:Class="Demo.Views.ColorPickerPage"
+             BackgroundColor="{Binding BackgroundColor}">
+    <ContentPage.Content>
+        <Grid>
+            <Button HorizontalOptions="End"
+                    VerticalOptions="End"
+                    BackgroundColor="White"
+                    TextColor="Black"
+                    Text="End"
+                    Command="{Binding EndCommand}"/>
+            <StackLayout VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    Spacing="50">
+                <Label HorizontalTextAlignment="Center"
+                  HorizontalOptions="Center">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="You passed the color " TextColor="White"/>
+                            <Span Text="{Binding BackgroundColorName}" TextColor="White"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <Button x:Name="PickerButton"
+                   Text="Select a Color"
+                   BackgroundColor="White"
+                   TextColor="Black"/>
+                <Label HorizontalTextAlignment="Center"
+                  HorizontalOptions="Center">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span TextColor="White"
+                             Text="You selected "/>
+                            <Span TextColor="{Binding SelectedColor}"
+                             Text="{Binding SelectedColorName}"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <Button Text="Pass the Color"
+                   BackgroundColor="White"
+                   TextColor="Black"
+                   Command="{Binding GoToNextPageCommand}"/>
+            </StackLayout>
+            <Picker x:Name="ColorPicker"
+                    ItemsSource="{Binding Colors}"
+                    SelectedItem="{Binding SelectedColorName}"
+                    IsVisible="False"/>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

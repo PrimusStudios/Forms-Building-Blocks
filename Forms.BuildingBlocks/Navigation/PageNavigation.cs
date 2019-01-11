@@ -17,6 +17,8 @@ namespace Forms.BuildingBlocks.Navigation
                     return null;
                 case MasterDetailPage page:
                     return page.Detail.Navigation;
+                case TabbedPage tabbedPage:
+                    return tabbedPage.CurrentPage.Navigation;
                 default:
                     return mainPage.Navigation;
             }
