@@ -35,7 +35,7 @@
                             <Span TextColor="White"
                              Text="You selected "/>
                             <Span TextColor="{Binding SelectedColor}"
-                             Text="{Binding SelectedColorName}"/>
+                                  Text="{Binding SelectedColorName, Mode=OneWay}" />
                         </FormattedString>
                     </Label.FormattedText>
                 </Label>

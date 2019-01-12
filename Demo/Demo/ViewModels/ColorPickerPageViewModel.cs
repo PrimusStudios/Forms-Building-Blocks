@@ -91,6 +91,7 @@ namespace Demo.ViewModels
             if (parameters.ContainsKey("Color"))
             {
                 BackgroundColorName = (string) parameters["Color"];
+                SelectedColorName = (string)parameters["Color"];
             }
         }
     }
