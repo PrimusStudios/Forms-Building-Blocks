@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Forms.BuildingBlocks.App;
 using Forms.BuildingBlocks.Enums;
 using Forms.BuildingBlocks.Exceptions;
 using Forms.BuildingBlocks.Interfaces.Navigation;
@@ -15,8 +16,9 @@ namespace Forms.BuildingBlocks.Navigation
         readonly IPageFactory PageFactory;
         readonly IPageNavigation PageNavigation;
         readonly IServiceProvider ServiceProvider;
-        public NavigationService(IPageFactory pageFactory, IPageNavigation pageNavigation, IServiceProvider serviceProvider)
+        public NavigationService(IPageFactory pageFactory, IPageNavigation pageNavigation)
         {
+            ServiceProvider = BuildingBlocksApplication.ServiceProvider;
             PageFactory = pageFactory;
             PageNavigation = pageNavigation;
         }

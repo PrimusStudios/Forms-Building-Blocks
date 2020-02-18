@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Forms.BuildingBlocks.App;
 using Forms.BuildingBlocks.Exceptions;
 using Forms.BuildingBlocks.Interfaces.DI;
 using Forms.BuildingBlocks.Interfaces.Navigation;
@@ -13,9 +14,9 @@ namespace Forms.BuildingBlocks.Navigation
         readonly Dictionary<Type, Page> PageCache;
         readonly IContainer Container;
 
-        public PageFactory(IContainer container)
+        public PageFactory()
         {
-            Container = container;
+            Container = BuildingBlocksApplication.Container;
             PageRegistrations = new Dictionary<Type, Type>();
             PageCache = new Dictionary<Type, Page>();
         }

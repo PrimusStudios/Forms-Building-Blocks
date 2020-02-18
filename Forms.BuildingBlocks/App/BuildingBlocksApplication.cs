@@ -10,7 +10,8 @@ namespace Forms.BuildingBlocks.App
     public abstract class BuildingBlocksApplication : Application
     {
         public new static BuildingBlocksApplication Current => (BuildingBlocksApplication)Application.Current;
-        protected IServiceProvider ServiceProvider;
+        public static IServiceProvider ServiceProvider { get; private set; }
+        internal static IContainer Container { get; private set; }
 
         protected INavigationService NavigationService;
         protected BuildingBlocksApplication(IPlatformRegistrations platformRegistrations)
@@ -21,19 +22,21 @@ namespace Forms.BuildingBlocks.App
 
         void Setup(IPlatformRegistrations platformRegistrations)
         {
-            var Container = Register();
+            Container = Register();
             if (Container == null)
                 throw new NotSetupException();
 
             RegisterInternal(Container);
             platformRegistrations?.Register(Container);
-
-            var viewFactory = new PageFactory(Container);
+            var viewFactory = new PageFactory();
 
             RegisterViewsForNavigation(viewFactory);
-            Container.RegisterInstance(Container);
+            
+            Container.RegisterInstance(typeof(IContainer), Container);
+            Container.RegisterInstance(typeof(IPageFactory), viewFactory);
 
             ServiceProvider = Container.Create();
+            var test = ServiceProvider.GetService(typeof(IPageFactory));
             NavigationService = (INavigationService)ServiceProvider.GetService(typeof(INavigationService));
 
             Initialized();

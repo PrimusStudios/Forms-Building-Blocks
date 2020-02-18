@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Demo.Container;
-using Forms.BuildingBlocks;
+﻿using Forms.BuildingBlocks;
 using Foundation;
 using UIKit;
 
@@ -24,7 +20,7 @@ namespace Demo.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             global::Xamarin.Forms.Forms.Init();
-            BuildingBlocks.Init(new DryIocContainer());
+            BuildingBlocks.Init();
 
             LoadApplication(new App());
 

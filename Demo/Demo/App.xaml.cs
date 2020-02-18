@@ -1,4 +1,6 @@
 ﻿using System;
+using Autofac;
+using Demo.Containers;
 using Demo.ViewModels;
 using Demo.Views;
 using Demo.Views.MasterDetails;
@@ -33,9 +35,11 @@ namespace Demo
             // Handle when your app resumes
         }
 
-        protected override void Register(IContainer container)
+        protected override Forms.BuildingBlocks.Interfaces.DI.IContainer Register()
         {
-            //container.Register(typeof(MainPageViewModel));
+            var builder = new ContainerBuilder();
+
+            return new AutofacContainer(builder);
         }
 
         protected override void RegisterViewsForNavigation(IPageFactory pageFactory)

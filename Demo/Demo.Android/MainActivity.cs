@@ -1,12 +1,7 @@
-﻿using System;
-
+﻿
 using Android.App;
 using Android.Content.PM;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
-using Demo.Container;
 using Forms.BuildingBlocks;
 
 namespace Demo.Droid
@@ -21,7 +16,7 @@ namespace Demo.Droid
 
             base.OnCreate(savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
-            BuildingBlocks.Init(new DryIocContainer());
+            BuildingBlocks.Init();
             LoadApplication(new App());
         }
     }

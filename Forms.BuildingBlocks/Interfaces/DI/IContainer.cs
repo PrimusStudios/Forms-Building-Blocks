@@ -22,7 +22,7 @@ namespace Forms.BuildingBlocks.Interfaces.DI
         /// <summary>
         ///     Registers an Instance of an object.
         /// </summary>
-        void RegisterInstance(object instance);
+        void RegisterInstance(Type type, object instance);
 
         IServiceProvider Create();
     }
