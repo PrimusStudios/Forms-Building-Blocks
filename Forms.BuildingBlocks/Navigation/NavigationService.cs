@@ -10,15 +10,15 @@ using Xamarin.Forms;
 
 namespace Forms.BuildingBlocks.Navigation
 {
-    public class NavigationService : INavigationService
+    internal class NavigationService : INavigationService
     { 
-        readonly IPageFactory pageFactory;
-        readonly IPageNavigation pageNavigation;
-
-        public NavigationService(IPageFactory pageFactory, IPageNavigation pageNavigation)
+        readonly IPageFactory PageFactory;
+        readonly IPageNavigation PageNavigation;
+        readonly IServiceProvider ServiceProvider;
+        public NavigationService(IPageFactory pageFactory, IPageNavigation pageNavigation, IServiceProvider serviceProvider)
         {
-            this.pageFactory = pageFactory;
-            this.pageNavigation = pageNavigation;
+            PageFactory = pageFactory;
+            PageNavigation = pageNavigation;
         }
 
         public async Task GoBackAsync(Dictionary<string, object> parameters, bool animated = true,
@@ -31,12 +31,12 @@ namespace Forms.BuildingBlocks.Navigation
             {
 
                 parameters.Add(nameof(NavigationDirection), NavigationDirection.ModalBackward);
-                await pageNavigation.Navigation.PopModalAsync(animated);
+                await PageNavigation.Navigation.PopModalAsync(animated);
             }
             else
             {
                 parameters.Add(nameof(NavigationDirection), NavigationDirection.Backward);
-                await pageNavigation.Navigation.PopAsync(animated);
+                await PageNavigation.Navigation.PopAsync(animated);
             }
 
             var viewModel = GetCurrentViewModel();
@@ -64,7 +64,7 @@ namespace Forms.BuildingBlocks.Navigation
                 throw new ArgumentNullException(nameof(parameters));
 
             parameters.Add(nameof(NavigationDirection), NavigationDirection.Backward);
-            await pageNavigation.Navigation.PopToRootAsync(animated);
+            await PageNavigation.Navigation.PopToRootAsync(animated);
 
             var viewModel = GetCurrentViewModel();
             await HandlePostNavigationInitializations(viewModel, parameters);
@@ -78,8 +78,8 @@ namespace Forms.BuildingBlocks.Navigation
             }
 
             var firstViewModel = viewModels.First();
-            var firstBindingContext = BuildingBlocks.Container.Resolve(firstViewModel);
-            var firstPage = pageFactory.CreatePage(firstViewModel, false);
+            var firstBindingContext = ServiceProvider.GetService(firstViewModel);
+            var firstPage = PageFactory.CreatePage(firstViewModel, false);
             firstPage.BindingContext = firstBindingContext;
 
             switch (firstPage)
@@ -110,8 +110,8 @@ namespace Forms.BuildingBlocks.Navigation
             for (var i = 1; i < viewModels.Length; ++i)
             {
                 var tabViewModel = viewModels[i];
-                var tabBindingContext = BuildingBlocks.Container.Resolve(tabViewModel);
-                var tabPage = pageFactory.CreatePage(tabViewModel, false);
+                var tabBindingContext = ServiceProvider.GetService(tabViewModel);
+                var tabPage = PageFactory.CreatePage(tabViewModel, false);
                 tabPage.BindingContext = tabBindingContext;
 
                 initializers.Add(HandlePostNavigationInitializations(tabBindingContext, parameters));
@@ -138,8 +138,8 @@ namespace Forms.BuildingBlocks.Navigation
             if (viewModels.Length > 1)
             {
                 var detailViewModel = viewModels[1];
-                var detailBindingContext = BuildingBlocks.Container.Resolve(detailViewModel);
-                var detailPage = pageFactory.CreatePage(detailViewModel, false);
+                var detailBindingContext = ServiceProvider.GetService(detailViewModel);
+                var detailPage = PageFactory.CreatePage(detailViewModel, false);
                 detailPage.BindingContext = detailBindingContext;
 
                 initializers.Add(HandlePostNavigationInitializations(detailBindingContext, parameters));
@@ -150,8 +150,8 @@ namespace Forms.BuildingBlocks.Navigation
             if (viewModels.Length > 2)
             {
                 var masterViewModel = viewModels[2];
-                var masterBindingContext = BuildingBlocks.Container.Resolve(masterViewModel);
-                var masterPage = pageFactory.CreatePage(masterViewModel, false);
+                var masterBindingContext = ServiceProvider.GetService(masterViewModel);
+                var masterPage = PageFactory.CreatePage(masterViewModel, false);
                 masterPage.BindingContext = masterBindingContext;
 
                 initializers.Add(HandlePostNavigationInitializations(masterBindingContext, parameters));
@@ -179,8 +179,8 @@ namespace Forms.BuildingBlocks.Navigation
             if (parameters == null)
                 throw new ArgumentNullException(nameof(parameters));
 
-            var bindingContext = BuildingBlocks.Container.Resolve(viewModel);
-            var page = pageFactory.CreatePage(viewModel, cachePage);
+            var bindingContext = ServiceProvider.GetService(viewModel);
+            var page = PageFactory.CreatePage(viewModel, cachePage);
 
             await Navigate(bindingContext, page, parameters, animated, useModal);
         }
@@ -192,7 +192,7 @@ namespace Forms.BuildingBlocks.Navigation
             page.BindingContext = null;
             page.BindingContext = bindingContext;
 
-            if (pageNavigation.Navigation == null)
+            if (PageNavigation.Navigation == null)
             {
                 throw new NullMainPageException();
             }
@@ -200,12 +200,12 @@ namespace Forms.BuildingBlocks.Navigation
             if (useModal)
             {
                 parameters.Add(nameof(NavigationDirection), NavigationDirection.ModalForward);
-                await pageNavigation.Navigation.PushModalAsync(page, animated);
+                await PageNavigation.Navigation.PushModalAsync(page, animated);
             }
             else
             {
                 parameters.Add(nameof(NavigationDirection), NavigationDirection.Forward);
-                await pageNavigation.Navigation.PushAsync(page, animated);
+                await PageNavigation.Navigation.PushAsync(page, animated);
             }
 
             await HandlePostNavigationInitializations(bindingContext, parameters);
@@ -222,8 +222,8 @@ namespace Forms.BuildingBlocks.Navigation
             if (parameters == null)
                 throw new ArgumentNullException(nameof(parameters));
 
-            var bindingContext = BuildingBlocks.Container.Resolve<TViewModel>();
-            var page = pageFactory.CreatePage<TViewModel>(cachePage);
+            var bindingContext = ServiceProvider.GetService(typeof(TViewModel));
+            var page = PageFactory.CreatePage<TViewModel>(cachePage);
 
             await Navigate(bindingContext, page, parameters, animated, useModal);
         }
@@ -250,7 +250,7 @@ namespace Forms.BuildingBlocks.Navigation
 
         object GetCurrentViewModel()
         {
-            var page = pageNavigation.Navigation.NavigationStack.LastOrDefault();
+            var page = PageNavigation.Navigation.NavigationStack.LastOrDefault();
             return page?.BindingContext;
         }
     }

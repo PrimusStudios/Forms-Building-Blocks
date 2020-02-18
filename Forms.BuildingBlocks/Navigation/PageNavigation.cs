@@ -3,7 +3,7 @@ using Xamarin.Forms;
 
 namespace Forms.BuildingBlocks.Navigation
 {
-    public class PageNavigation : IPageNavigation
+    internal class PageNavigation : IPageNavigation
     {
         public INavigation Navigation => GetBasePageNavigation();
 

@@ -7,15 +7,17 @@ using Xamarin.Forms;
 
 namespace Forms.BuildingBlocks.Navigation
 {
-    public class PageFactory : IPageFactory
+    internal class PageFactory : IPageFactory
     {
-        readonly Dictionary<Type, Type> pageRegistrations;
-        readonly Dictionary<Type, Page> pageCache;
-        readonly IContainer container;
-        public PageFactory()
+        readonly Dictionary<Type, Type> PageRegistrations;
+        readonly Dictionary<Type, Page> PageCache;
+        readonly IContainer Container;
+
+        public PageFactory(IContainer container)
         {
-            pageRegistrations = new Dictionary<Type, Type>();
-            pageCache = new Dictionary<Type, Page>();
+            Container = container;
+            PageRegistrations = new Dictionary<Type, Type>();
+            PageCache = new Dictionary<Type, Page>();
         }
 
         public Page CreatePage<TViewModel>(bool cachePage)
@@ -25,20 +27,20 @@ namespace Forms.BuildingBlocks.Navigation
 
         public Page CreatePage(Type viewModel, bool cachePage)
         {
-            if (!pageRegistrations.ContainsKey(viewModel))
+            if (!PageRegistrations.ContainsKey(viewModel))
                 throw new NotRegisteredException(nameof(viewModel));
 
-            if (cachePage && pageCache.ContainsKey(viewModel))
+            if (cachePage && PageCache.ContainsKey(viewModel))
             {
-                return pageCache[viewModel];
+                return PageCache[viewModel];
             }
 
-            var pageType = pageRegistrations[viewModel];
+            var pageType = PageRegistrations[viewModel];
             var page = Activator.CreateInstance(pageType) as Page;
 
             if (cachePage)
             {
-                pageCache.Add(viewModel, page);
+                PageCache.Add(viewModel, page);
             }
 
             return page;
@@ -51,20 +53,20 @@ namespace Forms.BuildingBlocks.Navigation
 
         public void RegisterPage(Type viewmodel, Type page)
         {
-            if (!pageRegistrations.ContainsKey(viewmodel))
+            if (!PageRegistrations.ContainsKey(viewmodel))
             {
-                pageRegistrations.Add(viewmodel, page);
-                BuildingBlocks.Container.Register(viewmodel);
+                PageRegistrations.Add(viewmodel, page);
+                Container.Register(viewmodel);
             }
             else
             {
-                pageRegistrations[viewmodel] = page;
+                PageRegistrations[viewmodel] = page;
             }
         }
 
         public void ClearCache()
         {
-            pageCache.Clear();
+            PageCache.Clear();
         }
     }
 }
