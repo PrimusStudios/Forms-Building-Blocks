@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Demo.Views.MasterDetails.SlightlyMoreComplexMasterDetailPageMaster"
+             Title="Master">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="MenuButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="LightBlue"/>
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="HeightRequest" Value="60"/>
+                <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <StackLayout VerticalOptions="Start"
+                 Spacing="0">
+       <BoxView HeightRequest="300"
+                BackgroundColor="Blue"
+                HorizontalOptions="FillAndExpand"/>
+        <Button Text="Push Page"
+                Style="{StaticResource MenuButton}"
+                Command="{Binding PushCommand}"/>
+        <Button Text="Replace Page"
+                Style="{StaticResource MenuButton}"
+                Command="{Binding ReplaceCommand}"/>
+        <Button Text="Push Color Page"
+                Style="{StaticResource MenuButton}"
+                Command="{Binding ColorPushCommand}"/>
+        <Button Text="Replace Color Page"
+                Style="{StaticResource MenuButton}"
+                Command="{Binding ColorReplaceCommand}"/>
+    </StackLayout>
+</ContentPage>

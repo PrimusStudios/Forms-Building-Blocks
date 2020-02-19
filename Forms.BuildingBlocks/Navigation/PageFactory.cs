@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Forms.BuildingBlocks.App;
 using Forms.BuildingBlocks.Exceptions;
 using Forms.BuildingBlocks.Interfaces.DI;
@@ -10,7 +11,7 @@ namespace Forms.BuildingBlocks.Navigation
 {
     internal class PageFactory : IPageFactory
     {
-        readonly Dictionary<string, (Type viewModel, Type Page)> PageRegistrations;
+        readonly Dictionary<string, (Type ViewModel, Type Page)> PageRegistrations;
         readonly Dictionary<string, Page> PageCache;
         readonly IContainer Container;
         Type NavigationPageType;
@@ -18,7 +19,7 @@ namespace Forms.BuildingBlocks.Navigation
         public PageFactory()
         {
             Container = BuildingBlocksApplication.Container;
-            PageRegistrations = new Dictionary<string, (Type viewModel, Type Page)>();
+            PageRegistrations = new Dictionary<string, (Type ViewModel, Type Page)>();
             PageCache = new Dictionary<string, Page>();
         }
 
@@ -39,11 +40,11 @@ namespace Forms.BuildingBlocks.Navigation
 
             var pageType = PageRegistrations[page];
             var createdPage = Activator.CreateInstance(pageType.Page) as Page;
-            if (pageType.viewModel != null)
+            if (pageType.ViewModel != null)
             {
                 try
                 {
-                    var bindingContext = BuildingBlocksApplication.ServiceProvider.GetService(pageType.viewModel);
+                    var bindingContext = BuildingBlocksApplication.ServiceProvider.GetService(pageType.ViewModel);
                     createdPage.BindingContext = bindingContext;
                 }
                 catch(Exception ex)
@@ -84,7 +85,8 @@ namespace Forms.BuildingBlocks.Navigation
             if (!PageRegistrations.ContainsKey(name))
             {
                 PageRegistrations.Add(name, (viewmodel, page));
-                Container.Register(viewmodel);
+                if(viewmodel != null)
+                    Container.Register(viewmodel);
             }
             else
             {
@@ -99,7 +101,7 @@ namespace Forms.BuildingBlocks.Navigation
 
         public object CreateViewModel(string page)
         {
-            if (!PageRegistrations.ContainsKey(page))
+            if (!PageRegistrations.ContainsKey(page) && PageRegistrations.Values.FirstOrDefault(x=>x.Page.GetType().Name == page).Page == null)
                 throw new NotRegisteredException(nameof(page));
 
             if (PageCache.ContainsKey(page))
@@ -108,9 +110,13 @@ namespace Forms.BuildingBlocks.Navigation
             }
 
             var pageType = PageRegistrations[page];
-            if (pageType.viewModel != null)
+            if (pageType.ViewModel != null)
             {
-                return BuildingBlocksApplication.ServiceProvider.GetService(pageType.viewModel);
+                return BuildingBlocksApplication.ServiceProvider.GetService(pageType.ViewModel);
+            }
+            else if(PageRegistrations.Values.FirstOrDefault(x => x.Page.GetType().Name == page).ViewModel != null)
+            {
+                return BuildingBlocksApplication.ServiceProvider.GetService(PageRegistrations.Values.FirstOrDefault(x => x.Page.GetType().Name == page).ViewModel);
             }
 
             return null;

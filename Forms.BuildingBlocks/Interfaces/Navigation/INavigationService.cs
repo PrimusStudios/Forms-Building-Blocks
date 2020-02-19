@@ -60,5 +60,27 @@ namespace Forms.BuildingBlocks.Interfaces.Navigation
         Task NavigateToAsync<TPage>(Dictionary<string, object> parameters, bool animated = true,
             bool cachePage = false, bool useModal = false)
             where TPage : class;
+
+        /// <summary>
+        ///     Replaces the Detail page of a Master detail page, or replaces the current tab of a page,
+        ///     or replaces the main page of the app. passes parameters
+        /// </summary>
+        Task ReplaceAsync<TPage>(Dictionary<string, object> parameters,
+            bool cachePage = false)
+            where TPage : class;
+
+        /// <summary>
+        ///     Replaces the Detail page of a Master detail page, or replaces the current tab of a page,
+        ///     or replaces the main page of the app. passes parameters
+        /// </summary>
+        Task ReplaceAsync(string page, Dictionary<string, object> parameters,
+            bool cachePage = false);
+
+        /// <summary>
+        ///     Replaces the Detail page of a Master detail page, or replaces the current tab of a page,
+        ///     or replaces the main page of the app
+        /// </summary>
+        Task ReplaceAsync(string page,
+            bool cachePage = false);
     }
 }

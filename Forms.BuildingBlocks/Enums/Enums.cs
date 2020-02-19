@@ -5,6 +5,7 @@
         Forward,
         Backward,
         ModalForward,
-        ModalBackward
+        ModalBackward,
+        Replace
     }
 }

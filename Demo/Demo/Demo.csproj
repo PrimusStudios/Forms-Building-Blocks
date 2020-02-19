@@ -19,9 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Views\MasterDetails\DetailMasterDetailPageMenuItem.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="Views\MasterDetails\SimpleMasterDetailPageMenuItem.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -29,18 +26,6 @@
 
   <ItemGroup>
     <EmbeddedResource Update="Views\ColorPickerPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\MainTabbedPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\MasterDetails\ComplexMasterDetailPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\MasterDetails\DetailMasterDetailPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\MasterDetails\DetailMasterDetailPageMaster.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\MasterDetails\SimpleMasterDetailPage.xaml">
@@ -58,5 +43,8 @@
     <EmbeddedResource Update="Views\ThirdPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\Tabs\" />
   </ItemGroup>
 </Project>

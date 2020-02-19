@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace Demo.Views.MasterDetails
+namespace Demo.Views.Tabs
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ComplexMasterDetailPage : MasterDetailPage
+    public partial class WrappedTabbedPage : TabbedPage
     {
-        public ComplexMasterDetailPage()
+        public WrappedTabbedPage()
         {
             InitializeComponent();
         }

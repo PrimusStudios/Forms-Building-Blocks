@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<MasterDetailPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Demo.Views.MasterDetails.DetailMasterDetailPage"
-             xmlns:pages="clr-namespace:Demo.Views.MasterDetails">
-  <MasterDetailPage.Master>
-    <pages:DetailMasterDetailPageMaster x:Name="MasterPage" />
-  </MasterDetailPage.Master>
-</MasterDetailPage>

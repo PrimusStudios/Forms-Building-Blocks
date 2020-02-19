@@ -6,25 +6,20 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using Demo.ViewModels;
+
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace Demo.Views.MasterDetails
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class DetailMasterDetailPageMaster : ContentPage
+    public partial class SlightlyMoreComplexMasterDetailPageMaster : ContentPage
     {
-        public ListView ListView;
 
-        public DetailMasterDetailPageMaster()
+        public SlightlyMoreComplexMasterDetailPageMaster()
         {
             InitializeComponent();
 
-            BindingContext = new DetailMasterDetailPageMasterViewModel();
-            ListView = MenuItemsListView;
         }
-
-       
     }
 }

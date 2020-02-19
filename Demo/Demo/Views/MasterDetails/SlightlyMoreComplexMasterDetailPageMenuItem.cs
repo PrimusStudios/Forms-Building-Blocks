@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Demo.Views.MasterDetails
 {
-
-    public class DetailMasterDetailPageMenuItem
+    public class SlightlyMoreComplexMasterDetailPageMenuItem
     {
-        public DetailMasterDetailPageMenuItem()
+        public SlightlyMoreComplexMasterDetailPageMenuItem()
         {
+            TargetType = typeof(SlightlyMoreComplexMasterDetailPageDetail);
         }
         public int Id { get; set; }
         public string Title { get; set; }

@@ -7,7 +7,6 @@ namespace Demo.ViewModels
     {
         public MainTabbedPageViewModel()
         {
-            Console.WriteLine("Yo");
         }
     }
 }
