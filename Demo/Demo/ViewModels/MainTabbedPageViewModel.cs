@@ -1,4 +1,5 @@
 ﻿using Forms.BuildingBlocks.ViewModels;
+using System;
 
 namespace Demo.ViewModels
 {
@@ -6,7 +7,7 @@ namespace Demo.ViewModels
     {
         public MainTabbedPageViewModel()
         {
-            
+            Console.WriteLine("Yo");
         }
     }
 }

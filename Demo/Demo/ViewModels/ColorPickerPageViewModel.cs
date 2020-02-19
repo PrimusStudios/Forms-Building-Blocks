@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
+using Demo.Views;
 
 namespace Demo.ViewModels
 {
@@ -17,7 +18,7 @@ namespace Demo.ViewModels
         List<string> _colors = new List<string>();
         async Task NavigateToNextPage()
         {
-            await navigationService.NavigateToAsync<ColorPickerPageViewModel>(new Dictionary<string, object>
+            await navigationService.NavigateToAsync<ColorPickerPage>(new Dictionary<string, object>
             {
                 {"Color", SelectedColorName}
             });
@@ -25,7 +26,7 @@ namespace Demo.ViewModels
 
         async Task NavigateToHome()
         {
-            await navigationService.NavigateToRootViewAsync();
+            await navigationService.NavigateToRootAsync();
         }
 
         public List<string> Colors

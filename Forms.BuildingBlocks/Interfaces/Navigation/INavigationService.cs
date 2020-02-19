@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Forms.BuildingBlocks.Interfaces.Navigation
@@ -17,58 +16,49 @@ namespace Forms.BuildingBlocks.Interfaces.Navigation
         Task GoBackAsync(bool animated = true, bool useModal = false);
 
         /// <summary>
-        ///     Navigates to a Uri.
-        /// </summary>
-        void NavigateToUriAsync(Uri uri);
-
-        /// <summary>
         ///     Navigates to the root page in the navigation stack.
         /// </summary>
-        Task NavigateToRootViewAsync(bool animated = true);
+        Task NavigateToRootAsync(bool animated = true);
 
         /// <summary>
         ///     Navigates to the root page in the navigation stack and passes parameters.
         /// </summary>
-        Task NavigateToRootViewAsync(Dictionary<string, object> parameters, bool animated = true);
+        Task NavigateToRootAsync(Dictionary<string, object> parameters, bool animated = true);
 
         /// <summary>
-        ///     Resets the main page of the app. If only passed a basic page view model, then it will just set the main page as a Page in a Navigation Page,
-        /// If passed a MasterDetailPageViewModel, the first view model after the MasterDetail will be the Master and the second will be the Detail,
-        /// If passed a Tabbed Page, each page will be added to the tabbed page, from left to right.
+        ///     Resets the main page of the app. With parameter passing.
         /// </summary>
-        Task SetMainPageAsync(Dictionary<string, object> parameters, params Type[] viewModels);
+        Task SetMainPageAsync(string page, Dictionary<string, object> parameters);
 
         /// <summary>
-        ///     Resets the main page of the app. If only passed a basic page view model, then it will just set the main page as a Page in a Navigation Page,
-        /// If passed a MasterDetailPageViewModel, the first view model after the MasterDetail will be the Master and the second will be the Detail,
-        /// If passed a Tabbed Page, each page will be added to the tabbed page, from left to right.
+        ///     Resets the main page of the app. 
         /// </summary>
-        Task SetMainPageAsync(params Type[] viewModels);
+        Task SetMainPageAsync(string page);
 
         /// <summary>
         ///     Navigates to page of Type View Model.
         /// </summary>
-        Task NavigateToViewAsync(Type viewModel, bool animated = true,
+        Task NavigateToAsync(string viewModel, bool animated = true,
             bool cachePage = false, bool useModal = false);
 
         /// <summary>
-        ///     Navigates to page of Type View Model and passes parameters.
+        ///     Navigates to page and passes parameters.
         /// </summary>
-        Task NavigateToViewAsync(Type viewModel, Dictionary<string, object> parameters, bool animated = true,
+        Task NavigateToAsync(string page, Dictionary<string, object> parameters, bool animated = true,
             bool cachePage = false, bool useModal = false);
 
         /// <summary>
-        ///     Navigates to view model.
+        ///     Navigates to Page.
         /// </summary>
-        Task NavigateToAsync<TViewModel>(bool animated = true, bool cachePage = false,
+        Task NavigateToAsync<TPage>(bool animated = true, bool cachePage = false,
             bool useModal = false)
-            where TViewModel : class;
+            where TPage : class;
 
         /// <summary>
-        ///     Navigates to view model and passes parameters.
+        ///     Navigates to view page and passes parameters.
         /// </summary>
-        Task NavigateToAsync<TViewModel>(Dictionary<string, object> parameters, bool animated = true,
+        Task NavigateToAsync<TPage>(Dictionary<string, object> parameters, bool animated = true,
             bool cachePage = false, bool useModal = false)
-            where TViewModel : class;
+            where TPage : class;
     }
 }

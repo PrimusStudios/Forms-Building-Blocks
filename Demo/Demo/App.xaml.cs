@@ -57,7 +57,7 @@ namespace Demo
         protected override async void Initialized()
         {
             InitializeComponent();
-            await NavigationService.SetMainPageAsync(typeof(MainTabbedPageViewModel), typeof(MainPageViewModel), typeof(SecondPageViewModel), typeof(ThirdPageViewModel));
+            await NavigationService.SetMainPageAsync("MainTabbedPage");
             //await NavigationService.SetMainPageAsync(typeof(SimpleMasterDetailPageViewModel), typeof(MainPageViewModel));
             //await NavigationService.SetMainPageAsync(typeof(ComplexMasterDetailPageViewModel), typeof(MainPageViewModel), typeof(SecondPageViewModel));
             //await NavigationService.SetMainPageAsync(typeof(SimpleMasterDetailPageViewModel));

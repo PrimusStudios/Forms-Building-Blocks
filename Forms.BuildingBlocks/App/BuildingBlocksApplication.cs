@@ -36,7 +36,6 @@ namespace Forms.BuildingBlocks.App
             Container.RegisterInstance(typeof(IPageFactory), viewFactory);
 
             ServiceProvider = Container.Create();
-            var test = ServiceProvider.GetService(typeof(IPageFactory));
             NavigationService = (INavigationService)ServiceProvider.GetService(typeof(INavigationService));
 
             Initialized();

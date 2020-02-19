@@ -2,6 +2,25 @@
 <TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
             xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
+            xmlns:views="clr-namespace:Demo.Views"
             android:TabbedPage.ToolbarPlacement="Bottom"
              x:Class="Demo.Views.MainTabbedPage">
+    <NavigationPage Title="Main Page">
+        <x:Arguments>
+        <views:MainPage/>
+            </x:Arguments>
+    </NavigationPage>
+    <NavigationPage Title="Second Page">
+        <x:Arguments>
+        <views:SecondPage/>
+        </x:Arguments>
+    </NavigationPage>
+    <NavigationPage Title="Third Page">
+        <x:Arguments>
+            <views:ThirdPage/>
+        </x:Arguments>
+    </NavigationPage>
+
+
+
 </TabbedPage>

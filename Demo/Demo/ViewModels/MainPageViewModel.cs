@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Demo.Views;
 using Forms.BuildingBlocks.Interfaces.Navigation;
 using Xamarin.Forms;
 using BindingBase = Forms.BuildingBlocks.ViewModels.BindingBase;
@@ -15,7 +16,7 @@ namespace Demo.ViewModels
 
         async Task StartColorDemo()
         {
-            await navigationService.NavigateToAsync<ColorPickerPageViewModel>(new Dictionary<string, object>
+            await navigationService.NavigateToAsync<ColorPickerPage>(new Dictionary<string, object>
             {
                 {"Color", "Red" }
             });

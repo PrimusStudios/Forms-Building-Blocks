@@ -10,64 +10,123 @@ namespace Forms.BuildingBlocks.Navigation
 {
     internal class PageFactory : IPageFactory
     {
-        readonly Dictionary<Type, Type> PageRegistrations;
-        readonly Dictionary<Type, Page> PageCache;
+        readonly Dictionary<string, (Type viewModel, Type Page)> PageRegistrations;
+        readonly Dictionary<string, Page> PageCache;
         readonly IContainer Container;
+        Type NavigationPageType;
 
         public PageFactory()
         {
             Container = BuildingBlocksApplication.Container;
-            PageRegistrations = new Dictionary<Type, Type>();
-            PageCache = new Dictionary<Type, Page>();
+            PageRegistrations = new Dictionary<string, (Type viewModel, Type Page)>();
+            PageCache = new Dictionary<string, Page>();
         }
 
-        public Page CreatePage<TViewModel>(bool cachePage)
+        public Page CreatePage<TPage>(bool cachePage)
         {
-            return CreatePage(typeof(TViewModel), cachePage);
+            return CreatePage(typeof(TPage).Name, cachePage);
         }
 
-        public Page CreatePage(Type viewModel, bool cachePage)
+        public Page CreatePage(string page, bool cachePage)
         {
-            if (!PageRegistrations.ContainsKey(viewModel))
-                throw new NotRegisteredException(nameof(viewModel));
+            if (!PageRegistrations.ContainsKey(page))
+                throw new NotRegisteredException(nameof(page));
 
-            if (cachePage && PageCache.ContainsKey(viewModel))
+            if (cachePage && PageCache.ContainsKey(page))
             {
-                return PageCache[viewModel];
+                return PageCache[page];
             }
 
-            var pageType = PageRegistrations[viewModel];
-            var page = Activator.CreateInstance(pageType) as Page;
+            var pageType = PageRegistrations[page];
+            var createdPage = Activator.CreateInstance(pageType.Page) as Page;
+            if (pageType.viewModel != null)
+            {
+                try
+                {
+                    var bindingContext = BuildingBlocksApplication.ServiceProvider.GetService(pageType.viewModel);
+                    createdPage.BindingContext = bindingContext;
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+            }
 
             if (cachePage)
             {
-                PageCache.Add(viewModel, page);
+                PageCache.Add(page, createdPage);
             }
 
-            return page;
+            return createdPage;
         }
 
-        public void RegisterPage<TViewModel, TPage>()
+        public void RegisterPage<TPage>(string name = "")
         {
-           RegisterPage(typeof(TViewModel), typeof(TPage));
+            RegisterPage(null, typeof(TPage), name);
         }
 
-        public void RegisterPage(Type viewmodel, Type page)
+        public void RegisterPage<TViewModel, TPage>(string name = "")
         {
-            if (!PageRegistrations.ContainsKey(viewmodel))
+           RegisterPage(typeof(TViewModel), typeof(TPage), name);
+        }
+
+        public void RegisterPage(Type viewmodel, Type page, string name = "")
+        {
+            if (string.IsNullOrEmpty(name))
+                name = page.Name;
+
+            if(page.IsSubclassOf(typeof(NavigationPage)))
             {
-                PageRegistrations.Add(viewmodel, page);
+                NavigationPageType = page;
+                return;
+            }
+
+            if (!PageRegistrations.ContainsKey(name))
+            {
+                PageRegistrations.Add(name, (viewmodel, page));
                 Container.Register(viewmodel);
             }
             else
             {
-                PageRegistrations[viewmodel] = page;
+                PageRegistrations[name] = (viewmodel, page);
             }
         }
 
         public void ClearCache()
         {
             PageCache.Clear();
+        }
+
+        public object CreateViewModel(string page)
+        {
+            if (!PageRegistrations.ContainsKey(page))
+                throw new NotRegisteredException(nameof(page));
+
+            if (PageCache.ContainsKey(page))
+            {
+                return PageCache[page].BindingContext;
+            }
+
+            var pageType = PageRegistrations[page];
+            if (pageType.viewModel != null)
+            {
+                return BuildingBlocksApplication.ServiceProvider.GetService(pageType.viewModel);
+            }
+
+            return null;
+        }
+
+        public object CreateViewModel<TPage>()
+        {
+            return CreateViewModel(nameof(TPage));
+        }
+
+        public NavigationPage GetNavigationPage(Page page)
+        {
+            if (NavigationPageType != null)
+                return Activator.CreateInstance(NavigationPageType, page) as NavigationPage;
+
+            return new NavigationPage(page);
         }
     }
 }
