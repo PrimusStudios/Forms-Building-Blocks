@@ -8,7 +8,7 @@ namespace Demo.ViewModels
 {
     public class SlightlyMoreComplexMasterDetailViewModel : Forms.BuildingBlocks.ViewModels.BindingBase
     {
-        readonly INavigationService NavigationService;
+        public INavigationService NavigationService { get; set; }
 
         public ICommand ReplaceCommand => new Command(async () => await ReplaceNavigation());
         public ICommand PushCommand => new Command(async () => await PushNavigation());
@@ -17,9 +17,9 @@ namespace Demo.ViewModels
 
         
 
-        public SlightlyMoreComplexMasterDetailViewModel(INavigationService navigationService)
+        public SlightlyMoreComplexMasterDetailViewModel()
         {
-            NavigationService = navigationService;
+            
         }
 
         async Task ReplaceColor()

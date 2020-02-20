@@ -296,7 +296,9 @@ namespace Forms.BuildingBlocks.Navigation
             return ReplaceAsync(page, new Dictionary<string, object>(), cachePage);
         }
 
-
-
+        public bool CanGoBack()
+        {
+            return Application.Current.MainPage.Navigation.NavigationStack.Count > 1;
+        }
     }
 }

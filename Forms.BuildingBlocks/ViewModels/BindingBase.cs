@@ -7,45 +7,32 @@ namespace Forms.BuildingBlocks.ViewModels
 {
     public abstract class BindingBase : INotifyPropertyChanged
     {
-        /// <summary>
-        ///     Event for when the property changes.
-        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
-        /// <summary>
-        ///     Raises Property changed events.
-        /// </summary>
-        protected virtual bool SetProperty<T>(ref T refProperty, T newValue,
-            [CallerMemberName] string propertyName = null)
+        protected virtual bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
         {
-            if (EqualityComparer<T>.Default.Equals(refProperty, newValue))
-                return false;
+            if (EqualityComparer<T>.Default.Equals(storage, value)) return false;
 
-            refProperty = newValue;
-            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
+            storage = value;
+            RaisePropertyChanged(propertyName);
 
             return true;
         }
 
-        /// <summary>
-        ///     Raises Property changed events and invokes an action for when the property changes.
-        /// </summary>
-        protected virtual bool SetProperty<T>(ref T refProperty, T newValue, Action onPropertyChanged,
-            [CallerMemberName] string propertyName = null)
+        protected virtual bool SetProperty<T>(ref T storage, T value, Action onChanged, [CallerMemberName] string propertyName = null)
         {
-            if (EqualityComparer<T>.Default.Equals(refProperty, newValue))
-                return false;
+            if (EqualityComparer<T>.Default.Equals(storage, value)) return false;
 
-            refProperty = newValue;
-            onPropertyChanged?.Invoke();
-            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
+            storage = value;
+            onChanged?.Invoke();
+            RaisePropertyChanged(propertyName);
 
             return true;
         }
 
-        protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
-        {
-            PropertyChanged?.Invoke(this, args);
-        }
+        protected void RaisePropertyChanged([CallerMemberName]string propertyName = null) => OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
+
+
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs args) => PropertyChanged?.Invoke(this, args);
     }
 }

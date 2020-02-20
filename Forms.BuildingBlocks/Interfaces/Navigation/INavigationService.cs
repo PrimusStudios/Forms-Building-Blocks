@@ -82,5 +82,10 @@ namespace Forms.BuildingBlocks.Interfaces.Navigation
         /// </summary>
         Task ReplaceAsync(string page,
             bool cachePage = false);
+
+        /// <summary>
+        ///     Returns if there is a page in the navigation stack to go back to
+        /// </summary>
+        bool CanGoBack();
     }
 }
