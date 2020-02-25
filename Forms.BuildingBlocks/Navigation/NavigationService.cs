@@ -29,6 +29,8 @@ namespace Forms.BuildingBlocks.Navigation
             if (parameters == null)
                 throw new ArgumentNullException(nameof(parameters));
 
+            HandleDeInitializations(GetCurrentViewModel(), parameters);
+
             if (useModal)
             {
                 parameters.Add(nameof(NavigationDirection), NavigationDirection.ModalBackward);
@@ -42,7 +44,7 @@ namespace Forms.BuildingBlocks.Navigation
             }
 
             var viewModel = GetCurrentViewModel();
-            await HandlePostNavigationInitializations(viewModel, parameters);
+            await HandleInitializations(viewModel, parameters);
         }
 
         public async Task GoBackAsync(bool animated = true, bool useModal = false)
@@ -60,11 +62,13 @@ namespace Forms.BuildingBlocks.Navigation
             if (parameters == null)
                 throw new ArgumentNullException(nameof(parameters));
 
+            HandleDeInitializations(GetCurrentViewModel(), parameters);
+
             parameters.Add(nameof(NavigationDirection), NavigationDirection.Backward);
             await PageNavigation.Navigation.PopToRootAsync(animated);
 
             var viewModel = GetCurrentViewModel();
-            await HandlePostNavigationInitializations(viewModel, parameters);
+            await HandleInitializations(viewModel, parameters);
         }
 
         public async Task SetMainPageAsync(string page, Dictionary<string, object> parameters)
@@ -76,7 +80,7 @@ namespace Forms.BuildingBlocks.Navigation
 
             if (PageNavigation.Navigation != null)
             {
-                HandleNavigatedFromInitilaizers(GetCurrentViewModel(), parameters);
+                HandleDeInitializations(GetCurrentViewModel(), parameters);
             }
 
             var createdPage = PageFactory.CreatePage(page, false);
@@ -91,9 +95,8 @@ namespace Forms.BuildingBlocks.Navigation
                     break;
                 default:
                     var navPage = PageFactory.GetNavigationPage(createdPage);
-                    await HandlePreNavigationInitializations(createdPage.BindingContext, parameters);
                     Application.Current.MainPage = navPage;
-                    await HandlePostNavigationInitializations(createdPage.BindingContext, parameters);
+                    await HandleInitializations(createdPage.BindingContext, parameters);
                     break;
             }
 
@@ -103,27 +106,9 @@ namespace Forms.BuildingBlocks.Navigation
         {
             bool hasNavigationPage = false;
 
-            var preinitializers = new List<Task> { HandlePreNavigationInitializations(tabbedPage.BindingContext, parameters) };
-            var initializers = new List<Task>{ HandlePostNavigationInitializations(tabbedPage.BindingContext, parameters) };
-            for (var i = 0; i < tabbedPage.Children.Count; ++i)
-            {
-                var tab = tabbedPage.Children[i];
-                if (tab is NavigationPage navTab)
-                {
-                    hasNavigationPage = true;
-                    tab = navTab.CurrentPage;
-                }
-                var tabPageViewModel = PageFactory.CreateViewModel(tab.GetType().Name);
 
-                if (tabPageViewModel != null)
-                {
-                    preinitializers.Add(HandlePreNavigationInitializations(tabPageViewModel, parameters));
-                    initializers.Add(HandlePostNavigationInitializations(tabPageViewModel, parameters));
-                    tab.BindingContext = tabPageViewModel;
-                }
-            }
-
-            await Task.WhenAll(preinitializers);
+            var initializers = new List<Task> { HandleInitializations(tabbedPage.BindingContext, parameters) };
+            hasNavigationPage = tabbedPage.Children.Any(x => x is NavigationPage);
 
             if (!hasNavigationPage)
             {
@@ -135,14 +120,31 @@ namespace Forms.BuildingBlocks.Navigation
                 Application.Current.MainPage = tabbedPage;
             }
 
+            for (var i = 0; i < tabbedPage.Children.Count; ++i)
+            {
+                var tab = tabbedPage.Children[i];
+                if (tab is NavigationPage navTab)
+                {
+                    tab = navTab.CurrentPage;
+                }
+                var tabPageViewModel = PageFactory.CreateViewModel(tab.GetType().Name);
+
+                if (tabPageViewModel != null)
+                {
+                    tab.BindingContext = tabPageViewModel;
+                    initializers.Add(HandleInitializations(tabPageViewModel, parameters));                    
+                }
+            }   
 
             await Task.WhenAll(initializers);
         }
 
         async Task SetMasterDetailPage(Dictionary<string, object> parameters, MasterDetailPage masterDetailPage)
         {
-            var initializers = new List<Task> { HandlePostNavigationInitializations(masterDetailPage.BindingContext, parameters) };
-            var preinitializers = new List<Task> { HandlePreNavigationInitializations(masterDetailPage.BindingContext, parameters) };
+
+            Application.Current.MainPage = masterDetailPage;
+
+            var initializers = new List<Task> { HandleInitializations(masterDetailPage.BindingContext, parameters) };
             if (masterDetailPage.Detail != null)
             {
                 if (masterDetailPage.Detail is NavigationPage navPage)
@@ -150,9 +152,8 @@ namespace Forms.BuildingBlocks.Navigation
                     var detailPageViewModel = PageFactory.CreateViewModel(navPage.CurrentPage.GetType().Name);
                     if (detailPageViewModel != null)
                     {
-                        preinitializers.Add(HandlePreNavigationInitializations(detailPageViewModel, parameters));
-                        initializers.Add(HandlePostNavigationInitializations(detailPageViewModel, parameters));
                         navPage.CurrentPage.BindingContext = detailPageViewModel;
+                        initializers.Add(HandleInitializations(detailPageViewModel, parameters));
                     }
                 }
                 else
@@ -160,9 +161,8 @@ namespace Forms.BuildingBlocks.Navigation
                     var detailPageViewModel = PageFactory.CreateViewModel(masterDetailPage.Detail.GetType().Name);
                     if (detailPageViewModel != null)
                     {
-                        preinitializers.Add(HandlePreNavigationInitializations(detailPageViewModel, parameters));
-                        initializers.Add(HandlePostNavigationInitializations(detailPageViewModel, parameters));
                         masterDetailPage.Detail.BindingContext = detailPageViewModel;
+                        initializers.Add(HandleInitializations(detailPageViewModel, parameters));
                     }
                 }
             }
@@ -172,16 +172,10 @@ namespace Forms.BuildingBlocks.Navigation
                 var masterPageViewModel = PageFactory.CreateViewModel(masterDetailPage.Master.GetType().Name);
                 if (masterPageViewModel != null)
                 {
-
-                    preinitializers.Add(new Task(async()=> await HandlePreNavigationInitializations(masterPageViewModel, parameters)));
-                    initializers.Add(HandlePostNavigationInitializations(masterPageViewModel, parameters));
                     masterDetailPage.Master.BindingContext = masterPageViewModel;
+                    initializers.Add(HandleInitializations(masterDetailPage, parameters));
                 }
-            }
-
-            await Task.WhenAll(preinitializers);
-
-            Application.Current.MainPage = masterDetailPage;
+            }          
 
             await Task.WhenAll(initializers);
         }
@@ -209,12 +203,7 @@ namespace Forms.BuildingBlocks.Navigation
 
         async Task Navigate(Page page, Dictionary<string, object> parameters, bool animated, bool useModal)
         {
-            HandleNavigatedFromInitilaizers(GetCurrentViewModel(), parameters);
-
-            await HandlePreNavigationInitializations(page.BindingContext, parameters);
-
-            //page.BindingContext = null;
-            //page.BindingContext = bindingContext;
+            HandleDeInitializations(GetCurrentViewModel(), parameters);
 
             if (PageNavigation.Navigation == null)
             {
@@ -232,7 +221,7 @@ namespace Forms.BuildingBlocks.Navigation
                 await PageNavigation.Navigation.PushAsync(page, animated);
             }
 
-            await HandlePostNavigationInitializations(page.BindingContext, parameters);
+            await HandleInitializations(page.BindingContext, parameters);
         }
 
         public async Task NavigateToAsync<TPage>(bool animated = true, bool cachePage = false, bool useModal = false) where TPage : class
@@ -251,34 +240,30 @@ namespace Forms.BuildingBlocks.Navigation
             await Navigate(page, parameters, animated, useModal);
         }
 
-        async Task HandlePostNavigationInitializations(object viewModel, Dictionary<string, object> parameters)
+        async Task HandleInitializations(object viewModel, Dictionary<string, object> parameters)
         {
-            (viewModel as IPostNavigationInitializer)?.OnNavigated(parameters);
+            (viewModel as IInitialize)?.Initialize(parameters);
 
-            if (viewModel is IAsyncPostNavigationInitializer initializer)
+            if (viewModel is IAsyncInitialize initializer)
             {
-                await initializer.OnNavigatedAsync(parameters);
+                await initializer.InitializeAsync(parameters);
             }
 
         }
 
-        async Task HandlePreNavigationInitializations(object viewModel, Dictionary<string, object> parameters)
+        void HandleDeInitializations(object viewModel, Dictionary<string, object> parameters)
         {
-            (viewModel as IPreNavigationInitializer)?.Init(parameters);
-
-            if (viewModel is IAsyncPreNavigationInitializer initializer)
-            {
-                await initializer.InitAsync(parameters);
-            }
-        }
-
-        void HandleNavigatedFromInitilaizers(object viewModel, Dictionary<string, object> parameters)
-        {
-            (viewModel as INavigatedFromInitializer)?.OnNavigatedFrom(parameters);
+            (viewModel as IDeInitialize)?.DeInitialize(parameters);
         }
 
         object GetCurrentViewModel()
         {
+            if(PageNavigation.Navigation.ModalStack.Any())
+            {
+                var modalpage = PageNavigation.Navigation.ModalStack.LastOrDefault();
+                return modalpage?.BindingContext;
+            }
+
             var page = PageNavigation.Navigation.NavigationStack.LastOrDefault();
             return page?.BindingContext;
         }
@@ -290,13 +275,11 @@ namespace Forms.BuildingBlocks.Navigation
 
         public async Task ReplaceAsync(string page, Dictionary<string, object> parameters, bool cachePage = false)
         {
-            HandleNavigatedFromInitilaizers(GetCurrentViewModel(), parameters);
+            HandleDeInitializations(GetCurrentViewModel(), parameters);
 
             parameters.Add(nameof(NavigationDirection), NavigationDirection.Replace);
 
             var createdPage = PageFactory.CreatePage(page, cachePage);
-
-            await HandlePreNavigationInitializations(createdPage.BindingContext, parameters);
 
             var navPage = PageFactory.GetNavigationPage(createdPage);
 
@@ -313,7 +296,7 @@ namespace Forms.BuildingBlocks.Navigation
                     break;
             }
 
-            await HandlePostNavigationInitializations(createdPage.BindingContext, parameters);
+            await HandleInitializations(createdPage.BindingContext, parameters);
         }
 
         public Task ReplaceAsync(string page, bool cachePage = false)

@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 
 namespace Forms.BuildingBlocks.Interfaces.Navigation.Initializers
 {
-    public interface IAsyncPostNavigationInitializer
+    public interface IAsyncInitialize
     {
         /// <summary>
-        ///     Async post navigation method used for initialization.
+        ///     Async method used for initialization.
         /// </summary>
-        Task OnNavigatedAsync(Dictionary<string, object> parameters);
+        Task InitializeAsync(Dictionary<string, object> parameters);
     }
 }

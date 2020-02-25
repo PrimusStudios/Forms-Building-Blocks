@@ -1,17 +1,15 @@
-﻿using System;
-using Forms.BuildingBlocks.Interfaces.Navigation;
-using Forms.BuildingBlocks.Interfaces.Navigation.Initializers;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Xamarin.Forms;
 using Demo.Views;
+using Forms.BuildingBlocks.Interfaces.Navigation;
+using Forms.BuildingBlocks.Interfaces.Navigation.Initializers;
+using Xamarin.Forms;
 
 namespace Demo.ViewModels
 {
-    public class ColorPickerPageViewModel : Forms.BuildingBlocks.ViewModels.BindingBase, IPreNavigationInitializer
+    public class ColorPickerPageViewModel : Forms.BuildingBlocks.ViewModels.BindingBase, IInitialize
     {
         public ICommand GoToNextPageCommand => new Command(async ()=> await NavigateToNextPage());
         public ICommand EndCommand => new Command(async () => await NavigateToHome());
@@ -86,7 +84,7 @@ namespace Demo.ViewModels
             }
         }
 
-        public void Init(Dictionary<string, object> parameters)
+        public void Initialize(Dictionary<string, object> parameters)
         {
 
             if (parameters.ContainsKey("Color"))

@@ -17,9 +17,9 @@ namespace Demo.ViewModels
 
         
 
-        public SlightlyMoreComplexMasterDetailViewModel()
+        public SlightlyMoreComplexMasterDetailViewModel(INavigationService navigationService)
         {
-            
+            NavigationService = navigationService;
         }
 
         async Task ReplaceColor()
