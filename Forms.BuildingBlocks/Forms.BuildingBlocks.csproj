@@ -5,7 +5,46 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="4.5.0.617" />
+    <PackageReference Include="Xamarin.Forms" Version="4.5.0.657" />
   </ItemGroup>
+  
 
+  <PropertyGroup>
+    <Title>Forms Building Blocks</Title>
+    <Company>Primus Studios</Company>
+    <Description>Building blocks to help start a Xamarin Forms project.</Description>
+    <OutputType>Library</OutputType>
+    <PackageId>Forms-Building-Blocks</PackageId>
+    <!--<PackageIcon>Logo.png</PackageIcon> This works in dotnet and MSBuild but Nuget still doesn't support it.-->
+    <PackageLicenseFile>UNLICENSE.txt</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+  <PropertyGroup>
+    <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+
+    <!-- Optional: Embed source files that are not tracked by the source control manager in the PDB -->
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+
+    <!-- Optional: Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+    
+  <PropertyGroup>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageOutputPath>./bin/Packages</PackageOutputPath>
+    <Authors>Primus Studios</Authors>
+    <Product>Forms Building Blocks</Product>
+    <PackageProjectUrl>https://github.com/PrimusStudios/Forms-Building-Blocks</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/PrimusStudios/Forms-Building-Blocks.git</RepositoryUrl>
+    <PackageTags>Microsoft Xamarin Forms Navigation Service</PackageTags>
+    <PackageReleaseNotes>Forms Building Blocks, building block meant to help new xamarin projects</PackageReleaseNotes>
+    <Version>1.0.0</Version>
+    <PackageIconUrl>https://github.com/PrimusStudios/blazor-state/raw/development/Assets/logoletters.png</PackageIconUrl>
+  </PropertyGroup>
+    
+    <ItemGroup>
+    <None Include="UNLICENSE.txt" Pack="true" PackagePath="" />
+  </ItemGroup>
 </Project>
