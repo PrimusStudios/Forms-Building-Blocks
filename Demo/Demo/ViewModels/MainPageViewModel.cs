@@ -11,7 +11,7 @@ namespace Demo.ViewModels
     public class MainPageViewModel : BindingBase
     {
         public ICommand StartColorDemoCommand => new Command(async ()=> await StartColorDemo());
-
+        public ICommand StartModalDemoCommand => new Command(async () => await navigationService.NavigateToAsync("ModalPage1", useModal: true));
         async Task StartColorDemo()
         {
             await navigationService.NavigateToAsync<ColorPickerPage>(new Dictionary<string, object>

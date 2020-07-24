@@ -12,7 +12,7 @@ using Xamarin.Forms;
 namespace Forms.BuildingBlocks.Navigation
 {
     internal class NavigationService : INavigationService
-    { 
+    {
         readonly IPageFactory PageFactory;
         readonly IPageNavigation PageNavigation;
         readonly IServiceProvider ServiceProvider;
@@ -34,14 +34,36 @@ namespace Forms.BuildingBlocks.Navigation
             if (useModal)
             {
                 parameters.Add(nameof(NavigationDirection), NavigationDirection.ModalBackward);
-                if(PageNavigation.Navigation.ModalStack.Count() > 0)
-                    await PageNavigation.Navigation.PopModalAsync(animated);
+                if (PageNavigation.Navigation.ModalStack.Count() > 0)
+                    await PageNavigation.Navigation.ModalStack.Last().Navigation.PopAsync(animated);
+                //await PageNavigation.Navigation.PopModalAsync(animated);
             }
             else
             {
                 parameters.Add(nameof(NavigationDirection), NavigationDirection.Backward);
                 await PageNavigation.Navigation.PopAsync(animated);
             }
+
+            var viewModel = GetCurrentViewModel();
+            await HandleInitializations(viewModel, parameters);
+        }
+
+        public Task CloseModalAsync(bool animated = true)
+        {
+            return CloseModalAsync(new Dictionary<string, object>(), animated);
+        }
+
+        public async Task CloseModalAsync(Dictionary<string, object> parameters, bool animated = true)
+        {
+            if (parameters == null)
+                throw new ArgumentNullException(nameof(parameters));
+
+            HandleDeInitializations(GetCurrentViewModel(), parameters);
+
+            parameters.Add(nameof(NavigationDirection), NavigationDirection.ModalBackward);
+            if (PageNavigation.Navigation.ModalStack.Count() > 0)
+                await PageNavigation.Navigation.PopModalAsync(animated);
+
 
             var viewModel = GetCurrentViewModel();
             await HandleInitializations(viewModel, parameters);
@@ -213,7 +235,10 @@ namespace Forms.BuildingBlocks.Navigation
             if (useModal)
             {
                 parameters.Add(nameof(NavigationDirection), NavigationDirection.ModalForward);
-                await PageNavigation.Navigation.PushModalAsync(page, animated);
+                if (PageNavigation.Navigation.ModalStack.Any())
+                    await PageNavigation.Navigation.ModalStack.Last().Navigation.PushAsync(page, animated);
+                else
+                    await PageNavigation.Navigation.PushModalAsync(new NavigationPage(page), animated);
             }
             else
             {

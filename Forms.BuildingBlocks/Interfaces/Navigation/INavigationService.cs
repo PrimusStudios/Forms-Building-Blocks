@@ -12,6 +12,8 @@ namespace Forms.BuildingBlocks.Interfaces.Navigation
 
         /// <summary>
         ///     Navigates Back one page.
+        ///     Note if trying to close a modal page, you should use CloseModalPage instead.
+        ///     This will attempt to navigate backwards in the modal stack.
         /// </summary>
         Task GoBackAsync(bool animated = true, bool useModal = false);
 
@@ -56,6 +58,7 @@ namespace Forms.BuildingBlocks.Interfaces.Navigation
 
         /// <summary>
         ///     Navigates to view page and passes parameters.
+        ///     Note if using a modal page, it will putt it in a navigation page for future push navigation.
         /// </summary>
         Task NavigateToAsync<TPage>(Dictionary<string, object> parameters, bool animated = true,
             bool cachePage = false, bool useModal = false)
@@ -87,5 +90,9 @@ namespace Forms.BuildingBlocks.Interfaces.Navigation
         ///     Returns if there is a page in the navigation stack to go back to
         /// </summary>
         bool CanGoBack();
+
+        Task CloseModalAsync(bool animated = true);
+
+        Task CloseModalAsync(Dictionary<string, object> parameters, bool animated = true);
     }
 }

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns ="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Demo.Views.Modals.ModalPage3">
+    <ContentPage.Content>
+        <StackLayout VerticalOptions="Center">
+            <Label Text="Modal Page 3"/>
+            <Button Text="Go Back"
+                    Command="{Binding GoBackCommand}"/>
+            <Button Text="Close"
+                    Command="{Binding CloseAllCommand}"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

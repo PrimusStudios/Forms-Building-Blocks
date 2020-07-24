@@ -4,6 +4,7 @@ using Demo.Containers;
 using Demo.ViewModels;
 using Demo.Views;
 using Demo.Views.MasterDetails;
+using Demo.Views.Modals;
 using Demo.Views.Tabs;
 using Forms.BuildingBlocks.App;
 using Forms.BuildingBlocks.Interfaces.DI;
@@ -49,6 +50,9 @@ namespace Demo
             pageFactory.RegisterPage<SecondPageViewModel, SecondPage>();
             pageFactory.RegisterPage<ThirdPageViewModel, ThirdPage>();
             pageFactory.RegisterPage<ColorPickerPageViewModel, ColorPickerPage>();
+            pageFactory.RegisterPage<ModalPageViewModel, ModalPage1>();
+            pageFactory.RegisterPage<ModalPageViewModel, ModalPage2>();
+            pageFactory.RegisterPage<ModalPageViewModel, ModalPage3>();
             pageFactory.RegisterPage<SimpleMasterDetailPageViewModel, SimpleMasterDetailPage>();
             pageFactory.RegisterPage<MainTabbedPageViewModel, MainTabbedPage>();
             pageFactory.RegisterPage<WrappedTabbedPage>();
@@ -75,11 +79,11 @@ namespace Demo
             //await NavigationService.SetMainPageAsync("SimpleMasterDetailPage");
 
             //This shows the pushing and replacing in a master detail page.
-            await NavigationService.SetMainPageAsync("SlightlyMoreComplexMasterDetailPage");
+            //await NavigationService.SetMainPageAsync("SlightlyMoreComplexMasterDetailPage");
 
 
             //await NavigationService.SetMainPageAsync(typeof(SimpleMasterDetailPageViewModel));
-            //await NavigationService.SetMainPageAsync(typeof(MainPageViewModel));
+            await NavigationService.SetMainPageAsync("MainPage");
         }
     }
 }
